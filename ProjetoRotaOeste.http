@@ -1,0 +1,6 @@
+@ProjetoRotaOeste_HostAddress = http://localhost:5183
+
+GET {{ProjetoRotaOeste_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
