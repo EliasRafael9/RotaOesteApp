@@ -17,7 +17,6 @@ namespace ProjetoRotaOeste.Controllers
         private readonly UserManager<Usuario> _userManager;
         private readonly SignInManager<Usuario> _signInManager;
         private readonly IConfiguration _configuration;
-
         private readonly IEmailSender _emailSender;
 
         public AuthController(UserManager<Usuario> userManager, SignInManager<Usuario> signInManager, IConfiguration configuration, IEmailSender emailSender)
@@ -42,61 +41,63 @@ namespace ProjetoRotaOeste.Controllers
 
             if (result.Succeeded)
             {
-                return Ok("User registered successfully");
+                return Ok("Usuario registrado com sucesso");
             }
 
             return BadRequest(result.Errors);
         }
-        /*
+        
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] Usuario user)
+        public async Task<IActionResult> Login([FromBody] LoginDTO request)
         {
-            var result = await _signInManager.PasswordSignInAsync(user.Email, user.Senha, false, lockoutOnFailure: false);
+            var result = await _signInManager.PasswordSignInAsync(request.Email, request.Senha, false, lockoutOnFailure: false);
 
             if (result.Succeeded)
             {
-                var existingUser = await _userManager.FindByEmailAsync(user.Email);
+                var existingUser = await _userManager.FindByEmailAsync(request.Email);
                 var token = GenerateJwtToken(existingUser);
                 return Ok(new { Token = token });
             }
 
-            return Unauthorized("Invalid login attempt");
+            return Unauthorized("Tentativa de login inválida");
         }
+        
         [HttpPost("forgot-password")]
         public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordModel model)
         {
+            // to do: configurar serviço de email (smtp)
             var user = await _userManager.FindByEmailAsync(model.Email);
-            if (user == null || !(await _userManager.IsEmailConfirmedAsync(user))) // Ensure email is confirmed
-            {
-                return BadRequest("Invalid email address");
-            }
+            Console.WriteLine(user.Email);
+            if (user == null) return BadRequest("Endereço de email inválido");
 
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
             var resetLink = Url.Action("ResetPassword", "Auth", new { token, email = user.Email }, Request.Scheme);
 
-            await _emailSender.SendEmailAsync(model.Email, "Password Reset Request", 
-                $"Please reset your password by clicking here: <a href='{resetLink}'>link</a>");
+            await _emailSender.SendEmailAsync(model.Email, "Pedindo redefinição de senha", 
+                $"Reinicie sua senha pelo: <a href='{resetLink}'>link</a>");
 
-            return Ok("Password reset link has been sent to your email.");
+            return Ok("Um email foi enviado para você com as instruções para redefinir sua senha.");
         }
 
         [HttpPost("reset-password")]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordModel model)
         {
+            // o token deve ser enviado por email.
             var user = await _userManager.FindByEmailAsync(model.Email);
             if (user == null)
             {
-                return BadRequest("Invalid email address");
+                return BadRequest("Endereço de email inválido");
             }
 
             var result = await _userManager.ResetPasswordAsync(user, model.Token, model.Password);
             if (result.Succeeded)
             {
-                return Ok("Password has been reset successfully.");
+                return Ok("Senha alterada com sucesso.");
             }
 
             return BadRequest(result.Errors);
         }
+        
         private string GenerateJwtToken(Usuario user)
         {
             var key = _configuration["Jwt:Key"];
@@ -125,6 +126,5 @@ namespace ProjetoRotaOeste.Controllers
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
-        */
     }
 }
