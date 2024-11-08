@@ -1,8 +1,8 @@
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using ProjetoRotaOeste.Models;
 
-
-public class AppDbContext : DbContext
+public class AppDbContext : IdentityDbContext<Usuario>
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
@@ -12,11 +12,12 @@ public class AppDbContext : DbContext
     public DbSet<Pergunta> Perguntas { get; set; }
     public DbSet<FinalidadePergunta> FinalidadesPergunta { get; set; }
     public DbSet<RespostaItem> RespostasItem { get; set; }
-    public DbSet<Usuario> Usuarios { get; set; }
+    //public DbSet<Usuario> Usuarios { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // Definindo chaves primárias e relacionamentos, se necessário
+        base.OnModelCreating(modelBuilder);
+        // Definindo chaves primárias e relacionamentos
         modelBuilder.Entity<Cliente>()
             .HasKey(c => c.IdCliente);
 
@@ -30,11 +31,7 @@ public class AppDbContext : DbContext
             .HasKey(fp => fp.IdFinalidade);
         
         modelBuilder.Entity<RespostaItem>()
-            .HasKey(ri => ri.IdRespostaItem);
-
-        modelBuilder.Entity<Usuario>()
-            .HasKey(u => u.Id);    
+            .HasKey(ri => ri.IdRespostaItem); 
                     
-                    // Configurações adicionais, se necessário
     }
 }

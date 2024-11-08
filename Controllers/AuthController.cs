@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Text;
 
 using ProjetoRotaOeste.Models;
+using ProjetoRotaOeste.DTOs;
 
 namespace ProjetoRotaOeste.Controllers
 {
@@ -28,9 +29,16 @@ namespace ProjetoRotaOeste.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] Usuario user)
+        public async Task<IActionResult> Register([FromBody] RegisterRequestDTO request)
         {
-            var result = await _userManager.CreateAsync(user, user.Senha);
+            var user = new Usuario
+            {
+                UserName = request.Email,
+                Nome = request.Nome,
+                Email = request.Email
+            };
+
+            var result = await _userManager.CreateAsync(user, request.Senha);
 
             if (result.Succeeded)
             {
@@ -39,7 +47,7 @@ namespace ProjetoRotaOeste.Controllers
 
             return BadRequest(result.Errors);
         }
-
+        /*
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] Usuario user)
         {
@@ -117,5 +125,6 @@ namespace ProjetoRotaOeste.Controllers
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+        */
     }
 }

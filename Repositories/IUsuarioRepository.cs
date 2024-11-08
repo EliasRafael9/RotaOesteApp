@@ -3,6 +3,5 @@ using ProjetoRotaOeste.Models;
 
 public interface IUsuarioRepository
 {
-    Task<Usuario> GetUsuarioByEmail(string email);
-    Task<Usuario> AddUsuario(Usuario usuario);
+    public Task<Usuario> GetUserByEmailAsync(string email);
 }

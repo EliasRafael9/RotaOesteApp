@@ -7,6 +7,8 @@ using ProjetoRotaOeste.Repositories;
 using ProjetoRotaOeste.Hubs;
 using Microsoft.AspNetCore.Identity;
 
+using ProjetoRotaOeste.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Configuração do SignalR
@@ -23,9 +25,16 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 // Configuração de identidade
-builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+builder.Services.AddIdentity<Usuario, IdentityRole>()
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
+
+// Configura o Email como UserName no Identity
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    options.User.RequireUniqueEmail = true;
+    options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+});
 
 // Configurações do DbContext
 builder.Services.AddDbContext<AppDbContext>(options =>

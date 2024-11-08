@@ -1,25 +1,27 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ProjetoRotaOeste.Models;
 
 public class UsuarioRepository : IUsuarioRepository
 {
     private readonly AppDbContext _context;
+    private readonly UserManager<Usuario> _userManager;
 
-    public UsuarioRepository(AppDbContext context)
+    public UsuarioRepository(AppDbContext context, UserManager<Usuario> userManager)
     {
         _context = context;
+        _userManager = userManager;
     }
 
-    public async Task<Usuario> GetUsuarioByEmail(string email)
+    public async Task<Usuario> GetUserByEmailAsync(string email)
     {
-        return await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == email);
+        return await _userManager.FindByEmailAsync(email);
     }
 
-    public async Task<Usuario> AddUsuario(Usuario usuario)
+    public async Task<IEnumerable<Usuario>> GetAllUsersAsync()
     {
-        await _context.Usuarios.AddAsync(usuario);
-        await _context.SaveChangesAsync();
-        return usuario;
+        return await _context.Users.ToListAsync();
     }
 }
