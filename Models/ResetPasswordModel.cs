@@ -1,3 +1,5 @@
+namespace ProjetoRotaOeste.Models;
+
 public class ResetPasswordModel
 {
     public required string Email { get; set; }

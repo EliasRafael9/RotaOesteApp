@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using ProjetoRotaOeste.Models;
 
 public interface IUsuarioRepository
 {

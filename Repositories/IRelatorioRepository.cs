@@ -1,4 +1,4 @@
-
+using ProjetoRotaOeste.Models;
     public interface IRelatorioRepository
     {
         Task<int> ObterTotalPerguntasPorTipoAsync(); 

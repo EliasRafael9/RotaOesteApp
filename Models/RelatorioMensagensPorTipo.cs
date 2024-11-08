@@ -1,3 +1,5 @@
+namespace ProjetoRotaOeste.Models;
+
 public class RelatorioMensagensPorTipo
 {
     public required string TipoPergunta { get; set; }

@@ -5,6 +5,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
+using ProjetoRotaOeste.Models;
+
 namespace ProjetoRotaOeste.Controllers
 {
     [ApiController]

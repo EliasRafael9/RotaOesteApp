@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using ProjetoRotaOeste.Models;
 
 public class UsuarioRepository : IUsuarioRepository
 {
