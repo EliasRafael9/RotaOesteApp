@@ -1,3 +1,4 @@
+/*
 using Microsoft.AspNetCore.Mvc;
 using ProjetoRotaOeste.Models;
 using ProjetoRotaOeste.Repositories;
@@ -47,3 +48,4 @@ namespace ProjetoRotaOeste.Controllers
         }
     }
 }
+*/

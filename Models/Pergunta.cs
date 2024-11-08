@@ -4,5 +4,7 @@ public class Pergunta
 {
     public int IdPergunta { get; set; }
     public required string TextoPergunta { get; set; }
-    public required string TipoPergunta { get; set; } // Opcional
+    public required string Descricao { get; set; }
+    public required DateOnly Data { get; set; }
+    //public required string TipoPergunta { get; set; } // Opcional
 }

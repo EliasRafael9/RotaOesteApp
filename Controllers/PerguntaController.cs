@@ -1,26 +1,26 @@
 using Microsoft.AspNetCore.Mvc;
-using ProjetoRotaOeste.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 
-namespace ProjetoRotaOeste.Controllers{
+using ProjetoRotaOeste.Models;
+using ProjetoRotaOeste.Repositories;
+using ProjetoRotaOeste.DTOs;
+
+namespace ProjetoRotaOeste.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
 public class PerguntaController : ControllerBase
 {
      private readonly AppDbContext _context;
+     private readonly IPerguntaRepository _perguntaRepository;
 
-        public PerguntaController(AppDbContext context)
-        {
-            _context = context;
-        }
-    private readonly IPerguntaRepository _perguntaRepository;
-
-    public PerguntaController(IPerguntaRepository perguntaRepository)
+    public PerguntaController(AppDbContext context, IPerguntaRepository perguntaRepository)
     {
+        _context = context;
         _perguntaRepository = perguntaRepository;
     }
+    
     // GET: api/pergunta
      [HttpGet]
     public async Task<ActionResult<IEnumerable<Pergunta>>> GetPerguntas()
@@ -31,14 +31,8 @@ public class PerguntaController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> AdicionarPergunta([FromBody] PerguntaDto perguntaDto)
     {
-        if (string.IsNullOrEmpty(perguntaDto.TextoPergunta))
-        {
-            return BadRequest("O texto da pergunta é obrigatório.");
-        }
-
         var pergunta = await _perguntaRepository.AdicionarPerguntaAsync(perguntaDto);
         return CreatedAtAction(nameof(AdicionarPergunta), new { id = pergunta.IdPergunta }, pergunta);
     }
  
-}
 }

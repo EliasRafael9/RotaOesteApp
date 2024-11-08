@@ -71,7 +71,7 @@ builder.Services.AddScoped<IMensagemService, MensagemService>();
 builder.Services.AddScoped<IPerguntaRepository, PerguntaRepository>();
 
 // Repositório de relatórios
-builder.Services.AddScoped<IRelatorioRepository, RelatorioRepository>();
+//builder.Services.AddScoped<IRelatorioRepository, RelatorioRepository>();
 
 
 builder.WebHost.UseUrls("http://localhost:5183");
