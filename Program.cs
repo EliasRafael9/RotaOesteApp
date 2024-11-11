@@ -73,16 +73,49 @@ builder.Services.AddScoped<IPerguntaRepository, PerguntaRepository>();
 // Repositório de relatórios
 //builder.Services.AddScoped<IRelatorioRepository, RelatorioRepository>();
 
+// Register IClienteRepository with ClienteRepository
+builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
 
-builder.WebHost.UseUrls("http://localhost:5183");
+// Add CORS policy to allow requests from your Flutter app
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        builder =>
+        {
+            builder
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader();
+        });
+});
 
 var app = builder.Build();
+
+// Initialize roles
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    string[] roles = { "Admin", "Client" };
+
+    foreach (var role in roles)
+    {
+        if (!roleManager.RoleExistsAsync(role).Result)
+        {
+            roleManager.CreateAsync(new IdentityRole(role)).Wait();
+        }
+    }
+}
 
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
 }
+
 app.UseHttpsRedirection();
+
+// Enable CORS
+app.UseCors("AllowAll");
+
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
@@ -90,13 +123,14 @@ app.UseSwaggerUI(c =>
     c.RoutePrefix = "swagger"; // Set this to "" if you want to serve the UI at the app's root
 });
 
-
-
 // Usar autenticação
 app.UseAuthentication();
 app.UseAuthorization();
 
 // Configuração do pipeline de solicitação...
 app.MapControllers();
+
+// Listen on all network interfaces
+app.Urls.Add("http://0.0.0.0:5183");
 
 app.Run();

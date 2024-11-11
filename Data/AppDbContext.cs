@@ -33,5 +33,10 @@ public class AppDbContext : IdentityDbContext<Usuario>
         modelBuilder.Entity<RespostaItem>()
             .HasKey(ri => ri.IdRespostaItem); 
                     
+        // Configure many-to-many relationship if not already done
+        modelBuilder.Entity<Pergunta>()
+            .HasMany(p => p.UserClients)
+            .WithMany()
+            .UsingEntity(j => j.ToTable("PerguntaUsuarios"));
     }
 }

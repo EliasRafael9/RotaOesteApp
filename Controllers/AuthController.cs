@@ -30,6 +30,12 @@ namespace ProjetoRotaOeste.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequestDTO request)
         {
+            var existingUser = await _userManager.FindByEmailAsync(request.Email);
+            if (existingUser != null)
+            {
+                return BadRequest("Email já está em uso.");
+            }
+
             var user = new Usuario
             {
                 UserName = request.Email,
@@ -41,6 +47,7 @@ namespace ProjetoRotaOeste.Controllers
 
             if (result.Succeeded)
             {
+                await _userManager.AddToRoleAsync(user, request.Role);
                 return Ok("Usuario registrado com sucesso");
             }
 
@@ -56,7 +63,8 @@ namespace ProjetoRotaOeste.Controllers
             {
                 var existingUser = await _userManager.FindByEmailAsync(request.Email);
                 var token = GenerateJwtToken(existingUser);
-                return Ok(new { Token = token });
+                var role = await _userManager.GetRolesAsync(existingUser);
+                return Ok(new { Token = token, Role = role });
             }
 
             return Unauthorized("Tentativa de login inválida");

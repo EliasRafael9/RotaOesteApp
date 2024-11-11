@@ -1,8 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using ProjetoRotaOeste.Dtos;
 using ProjetoRotaOeste.Models;
 using ProjetoRotaOeste.Repositories;
+using System.Linq;
+using ProjetoRotaOeste.DTOs;
+
 
 namespace ProjetoRotaOeste.Controllers
 {
@@ -11,10 +15,14 @@ namespace ProjetoRotaOeste.Controllers
     public class ClienteController : ControllerBase
     {
         private readonly IClienteRepository _clienteRepository;
+        private readonly IUsuarioRepository _usuarioRepository;
+        private readonly IPerguntaRepository _perguntaRepository;
 
-        public ClienteController(IClienteRepository clienteRepository)
+        public ClienteController(IClienteRepository clienteRepository, IUsuarioRepository usuarioRepository, IPerguntaRepository perguntaRepository)
         {
             _clienteRepository = clienteRepository;
+            _usuarioRepository = usuarioRepository;
+            _perguntaRepository = perguntaRepository;
         }
 
         [HttpGet("{id}")]
@@ -25,10 +33,10 @@ namespace ProjetoRotaOeste.Controllers
             return Ok(cliente);
         }
 
-        [HttpGet]
+        [HttpGet ("all")]
         public async Task<IActionResult> GetAllClientes()
         {
-            var clientes = await _clienteRepository.GetAllClientesAsync();
+            var clientes = await _usuarioRepository.GetAllClientesAsync();
             return Ok(clientes);
         }
 
@@ -52,6 +60,28 @@ namespace ProjetoRotaOeste.Controllers
         {
             await _clienteRepository.DeleteClienteAsync(id);
             return NoContent();
+        }
+
+        [HttpPost("perguntas")]
+        public async Task<IActionResult> GetPerguntasByEmail([FromBody] string email)
+        {
+            var perguntas = await _perguntaRepository.GetPerguntasByUserEmailAsync(email);
+            if (perguntas == null || !perguntas.Any())
+            {
+                return NotFound("Nenhuma pergunta vinculada ao usuário.");
+            }
+
+            var response = perguntas.Select(p => new PerguntaResponseDto
+            {
+                IdPergunta = p.IdPergunta,
+                TextoPergunta = p.TextoPergunta,
+                Descricao = p.Descricao,
+                Data = p.Data,
+                ClienteNomes = p.UserClients.Select(u => u.Nome).ToList(),
+                ClienteEmails = p.UserClients.Select(u => u.Email).ToList()
+            });
+
+            return Ok(response);
         }
     }
 }

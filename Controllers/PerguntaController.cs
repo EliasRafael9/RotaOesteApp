@@ -22,13 +22,27 @@ public class PerguntaController : ControllerBase
     }
     
     // GET: api/pergunta
-     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Pergunta>>> GetPerguntas()
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<PerguntaResponseDto>>> GetPerguntas()
     {
-         return await _context.Perguntas.ToListAsync();
+        var perguntas = await _context.Perguntas
+            .Include(p => p.UserClients)
+            .ToListAsync();
+
+        var response = perguntas.Select(p => new PerguntaResponseDto
+        {
+            IdPergunta = p.IdPergunta,
+            TextoPergunta = p.TextoPergunta,
+            Descricao = p.Descricao,
+            Data = p.Data,
+            ClienteNomes = p.UserClients.Select(u => u.Nome).ToList(),
+            ClienteEmails = p.UserClients.Select(u => u.Email).ToList()
+        });
+
+        return Ok(response);
     }
 
-    [HttpPost]
+    [HttpPost("adicionar")]
     public async Task<IActionResult> AdicionarPergunta([FromBody] PerguntaDto perguntaDto)
     {
         var pergunta = await _perguntaRepository.AdicionarPerguntaAsync(perguntaDto);

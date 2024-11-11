@@ -13,4 +13,8 @@ public class RegisterRequestDTO
     [Required(ErrorMessage = "A senha é obrigatória.")]
     [MinLength(6, ErrorMessage = "A senha deve ter no mínimo 6 caracteres.")]
     public string Senha { get; set; }
+
+    [Required(ErrorMessage = "O papel é obrigatório.")]
+    [RegularExpression("^(Admin|Client)$", ErrorMessage = "O papel deve ser Admin ou Client.")]
+    public string Role { get; set; }
 }

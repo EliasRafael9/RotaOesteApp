@@ -11,4 +11,7 @@ public class PerguntaDto
     
     [Required(ErrorMessage = "A data da pergunta é obrigatória.")]
     public required DateOnly Data { get; set; }
+    
+    [Required(ErrorMessage = "Os e-mails dos usuários são obrigatórios.")]
+    public List<string> UserClientEmails { get; set; }
 }

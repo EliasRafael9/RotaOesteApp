@@ -24,4 +24,9 @@ public class UsuarioRepository : IUsuarioRepository
     {
         return await _context.Users.ToListAsync();
     }
+
+    public async Task<IEnumerable<Usuario>> GetAllClientesAsync()
+    {
+        return await _userManager.GetUsersInRoleAsync("Client");
+    }
 }
