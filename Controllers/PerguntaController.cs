@@ -42,6 +42,26 @@ public class PerguntaController : ControllerBase
         return Ok(response);
     }
 
+    [HttpPost("PorUsuario")]
+    public async Task<IActionResult> GetPerguntasPorUsuario([FromBody] string email)
+    {
+        var perguntas = await _perguntaRepository.GetPerguntasPorUsuarioAsync(email);
+        if (perguntas == null || !perguntas.Any())
+        {
+            return NotFound("Nenhuma pergunta vinculada ao usuário.");
+        }
+
+        var response = perguntas.Select(p => new PerguntaResponseDto
+        {
+            IdPergunta = p.IdPergunta,
+            TextoPergunta = p.TextoPergunta,
+            Descricao = p.Descricao,
+            Data = p.Data
+        });
+
+        return Ok(response);
+    }
+
     [HttpPost("adicionar")]
     public async Task<IActionResult> AdicionarPergunta([FromBody] PerguntaDto perguntaDto)
     {

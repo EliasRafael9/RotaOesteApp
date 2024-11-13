@@ -14,8 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Configuração do SignalR
 builder.Services.AddSignalR();
 
-
-// Configuração de serviços do controlador
+// Ensure controllers are added
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
@@ -63,9 +62,6 @@ builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 
 //Serviço de email
 builder.Services.AddScoped<IEmailSender, EmailSender>();
-
-// Serviço de mensagem
-builder.Services.AddScoped<IMensagemService, MensagemService>();
 
 // Repositório de perguntas
 builder.Services.AddScoped<IPerguntaRepository, PerguntaRepository>();

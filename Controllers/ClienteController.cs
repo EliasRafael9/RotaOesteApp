@@ -16,13 +16,11 @@ namespace ProjetoRotaOeste.Controllers
     {
         private readonly IClienteRepository _clienteRepository;
         private readonly IUsuarioRepository _usuarioRepository;
-        private readonly IPerguntaRepository _perguntaRepository;
 
         public ClienteController(IClienteRepository clienteRepository, IUsuarioRepository usuarioRepository, IPerguntaRepository perguntaRepository)
         {
             _clienteRepository = clienteRepository;
             _usuarioRepository = usuarioRepository;
-            _perguntaRepository = perguntaRepository;
         }
 
         [HttpGet("{id}")]
@@ -60,28 +58,6 @@ namespace ProjetoRotaOeste.Controllers
         {
             await _clienteRepository.DeleteClienteAsync(id);
             return NoContent();
-        }
-
-        [HttpPost("perguntas")]
-        public async Task<IActionResult> GetPerguntasByEmail([FromBody] string email)
-        {
-            var perguntas = await _perguntaRepository.GetPerguntasByUserEmailAsync(email);
-            if (perguntas == null || !perguntas.Any())
-            {
-                return NotFound("Nenhuma pergunta vinculada ao usuário.");
-            }
-
-            var response = perguntas.Select(p => new PerguntaResponseDto
-            {
-                IdPergunta = p.IdPergunta,
-                TextoPergunta = p.TextoPergunta,
-                Descricao = p.Descricao,
-                Data = p.Data,
-                ClienteNomes = p.UserClients.Select(u => u.Nome).ToList(),
-                ClienteEmails = p.UserClients.Select(u => u.Email).ToList()
-            });
-
-            return Ok(response);
         }
     }
 }

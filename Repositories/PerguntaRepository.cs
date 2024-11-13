@@ -30,7 +30,7 @@ public class PerguntaRepository : IPerguntaRepository
         return pergunta;
     }
 
-    public async Task<IEnumerable<Pergunta>> GetPerguntasByUserEmailAsync(string email)
+    public async Task<IEnumerable<Pergunta>> GetPerguntasPorUsuarioAsync(string email)
     {
         return await _context.Perguntas
             .Include(p => p.UserClients)
